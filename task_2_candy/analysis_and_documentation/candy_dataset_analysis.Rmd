@@ -1,0 +1,84 @@
+---
+title: "Candy Dataset Analysis"
+output: html_notebook
+---
+
+############### 1.4 Task 4 - Halloween Candy Data
+
+##### 1.4.2 Analysis questions
+
+
+## Loading packages
+```{r}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(tidyr)
+library(here)
+```
+
+
+## Loading in csv file of cleaned data.
+
+```{r}
+candy_dataset <- read_csv(here("clean_data/candy_data_clean.csv"))
+```
+
+## 1. What is the total number of candy ratings given across the three years. (Number of candy ratings, not the number of raters. Don't count missing values)
+```{r}
+candy_dataset %>%
+  filter(!is.na(rating)) %>%
+  count(rating_id)
+  
+```
+
+The total number of ratings is 595,654.
+
+
+## 2. What was the average age of people who are going out trick or treating?
+```{r}
+candy_dataset %>%
+  filter(going_trick_or_treating == "Yes") %>%
+  mean(age)
+```
+
+## 3. What was the average age of people who are not going trick or treating?
+```{r}
+candy_dataset2 <- candy_dataset %>% 
+  transform(candy_dataset, age = as.numeric(as.factor(age))) %>% 
+  mutate(age = coalesce(age, 0))
+
+candy_dataset2 %>%
+  filter(going_trick_or_treating == "No") %>%
+  mean("age")
+
+
+
+```
+
+
+## 4. How many people rated Starburst as despair?
+```{r}
+candy_dataset %>%
+  filter(candy == "Starburst", rating == "DESPAIR") %>%
+  count()
+
+```
+
+Starburst was rated DESPAIR by 1990 people.
+
+
+.
+## 5. What was the most popular candy bar by this rating system for each gender in the dataset ?
+
+
+## 6. What was the most popular candy bar in each year?
+```{r}
+candy_dataset %>%
+  filter(year == "2015", rating == "JOY") %>%
+  group_by(candy) %>%
+  count(rating)
+
+
+```
+
